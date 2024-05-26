@@ -63,8 +63,7 @@ def signupuser(request):
 
     #if username doesn't exist
     User.objects.create_user(username = username, password = password).save()
-    lastobject = len(User.objects.all())-1
-    CustomerModel(userid = User.objects.all() [int(lastobject)].id, phoneno = phoneno).save()
+    CustomerModel(username = username, phoneno = phoneno).save()
     messages.add_message(request,messages.ERROR, 'User Successfully registered')
     return redirect('homepage')
 
@@ -97,25 +96,24 @@ def userlogout(request):
 
 def placeorder(request):
     username = request.user.username
-    phoneno = CustomerModel.objects.filter(userid = request.user.id)[1].phoneno
+    print(username)
+    phoneno = CustomerModel.objects.get(username = request.user.username).phoneno
+    print(phoneno)
     address = request.POST['address']
     ordereditems = ""
     for pizza in PizzModel.objects.all():
         pizzaid = pizza.id
         name = pizza.name
         price = pizza.price
-        quantity = request.POST.get(str(pizzaid), " ")
+        quantity = int(request.POST.get(name))
 
         print(name)
         print(price)
-        print(quantity)
-        if str(quantity) != "0" and str(quantity) == " ":
-            ordereditems = ordereditems + name + " " + price + "quantity : " + quantity + " "
-
-
-
-    OrderModel(username=username, phoneno=phoneno, address=address, ordereditems=ordereditems).save()
-    messages.add_message(request, messages.SUCCESS, "Order Successfully placed")
+        print(type(quantity))
+        if quantity is not None and quantity>0:
+            ordereditems = ordereditems + name + " " + price + "quantity : " +str(quantity) + " "
+            OrderModel(username=username, phoneno=phoneno, address=address, ordereditems=ordereditems).save()
+            messages.add_message(request, messages.SUCCESS, "Order Successfully placed")
     return redirect('customerpage')
 
 
