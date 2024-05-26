@@ -5,7 +5,7 @@ class PizzModel(models.Model):
     price = models.CharField(max_length=10)
 
 class CustomerModel(models.Model):
-    userid = models.CharField(max_length=10)
+    username = models.CharField(max_length=10)
     phoneno = models.CharField(max_length=10)
 
 class OrderModel(models.Model):
